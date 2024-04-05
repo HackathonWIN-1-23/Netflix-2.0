@@ -15,8 +15,17 @@
             <p v-if="errors.password.length">{{ errors.password }}</p>
           </div>
           <div class="show">
-            <input @change="show2 = !show2" class="chinp" type="checkbox">
-            <label>Show password</label>
+            <div>
+              <input @change="show2 = !show2" class="chinp" type="checkbox">
+              <label>Show password</label>
+            </div>
+            <div class="show_inner">
+              <div v-for="i in genress">
+                <v-chip color="grey" @click="getGenre(i)" :class="{'clicked_chip' : i.status}">
+                  {{ i.name }}
+                </v-chip>
+              </div>
+            </div>
           </div>
           <div class="btn-wrap">
             <button class="btn1">Registration</button>
@@ -41,11 +50,49 @@ export default {
   components: {Layout},
   data() {
     return {
+      genress:[{
+        id: 1,
+        name: "Action",
+        status: false
+      },
+        {
+          id: 2,
+          name: "Drama",
+          status: false
+        },{
+          id: 3,
+          name: "Horror",
+          status: false
+        },{
+          id: 4,
+          name: "Comedy",
+          status: false
+        },{
+          id: 5,
+          name: "Thriller",
+          status: false
+        },{
+          id: 6,
+          name: "Romance",
+          status: false
+        },{
+          id: 7,
+          name: "Crime",
+          status: false
+        },{
+          id: 8,
+          name: "Science-Fiction",
+          status: false
+        }
+      ],
       show2: false,
       formData: {
         email: '',
         password: '',
-        returnSecureToken: true
+        genres:[
+
+        ],
+        returnSecureToken: true,
       },
       errors: {
         email: '',
@@ -54,6 +101,10 @@ export default {
     }
   },
   methods: {
+    getGenre(ik){
+      ik.status = true
+      this.formData.genres.push(ik.name)
+    },
     async register() {
       console.log(this.formData)
       const URL = `http://localhost:8000/users`
@@ -70,7 +121,6 @@ export default {
         localStorage.setItem('user', data);
         this.$router.push({ path: '/home' })
       } else {
-        console.log(data.errors.email.message)
         this.errors.email = 'Такой email уже есть'
         // switch (data.errors.email.message) {
         //   case 'INVALID_EMAIL':
@@ -95,6 +145,25 @@ export default {
 </script>
 
 <style scoped>
+.clicked_chip{
+  background: var(--vt-c-black-mute);
+}
+.show .show_inner{
+  width: 70%;
+  padding: 15px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.show .show_inner .v-chip{
+  margin: 5px;
+}
+.show{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
 form {
   width: 100%;
 }
@@ -210,7 +279,7 @@ form {
 
 .form-wrap {
   background: white;
-  height: 55%;
+  height: 78%;
   width: 30%;
   display: flex;
   flex-direction: column;

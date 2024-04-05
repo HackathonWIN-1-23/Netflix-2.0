@@ -25,13 +25,6 @@ const UserSchema = new Schema({
   },
   genres: {
     type: [String],
-    required: true,
-    validate: {
-      validator: function(value) {
-        return Array.isArray(value) && value.length > 0;
-      },
-      message: "Поле genres не может быть пустым массивом",
-    }
   },
   token: {
     type: String,

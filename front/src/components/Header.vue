@@ -21,7 +21,7 @@ import { useHeaderStore } from '../stores/header';
 export default {
   data() {
     return {
-
+      name:'',
       dialog: false,
     }
   },
@@ -30,12 +30,17 @@ export default {
     Chart
   },
   methods: {
+    getUser(){
+      this.name = localStorage.getItem('user')
+      console.log(this.name)
+    },
     searchInput(){
       console.log(this.movieInput.movieInputs)  
     },
 
   },
   async  mounted() {
+    this.getUser()
     this.inputStore.headerHeight = this.$refs.myHeader.clientHeight
     // console.log(this.inputStore.headerHeight);
     await this.headerStore.getFavourite()
