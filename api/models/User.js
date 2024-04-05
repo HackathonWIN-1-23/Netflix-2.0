@@ -6,27 +6,33 @@ const { Schema, model } = mongoose;
 const SALT_WORK_FACTOR = 10;
 
 const UserSchema = new Schema({
-  username: {
+  email: {
     type: String,
     required: true,
     unique: true,
     validate: {
-      validator: async function (username) {
-        if (!this.isModified("username")) return true;
-        const user = await this.constructor.findOne({ username: username });
+      validator: async function (email) {
+        if (!this.isModified("email")) return true;
+        const user = await this.constructor.findOne({ email: email});
         return !Boolean(user);
       },
       message: "This user is already registered",
     },
   },
-  displayName: {
-    type: String,
-    required: true,
-  },
   password: {
     type: String,
     required: true,
   },
+  // genres: {
+  //   type: [String],
+  //   required: true,
+  //   validate: {
+  //     validator: function(value) {
+  //       return Array.isArray(value) && value.length > 0;
+  //     },
+  //     message: "Поле genres не может быть пустым массивом",
+  //   }
+  // },
   token: {
     type: String,
     required: true,
@@ -36,10 +42,6 @@ const UserSchema = new Schema({
     required: true,
     default: "user",
     enum: ["user", "admin"],
-  },
-  avatar: {
-    type: String,
-    required: true,
   },
   googleId: String,
 });

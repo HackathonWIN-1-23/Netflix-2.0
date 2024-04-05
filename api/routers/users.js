@@ -12,13 +12,12 @@ const User = require('../models/User');
 const usersRouter = express.Router();
 const client = new OAuth2Client(config.google.clientId);
 
-usersRouter.post('/', imagesUpload.single('avatar'), async (req, res, next) => {
+usersRouter.post('/', async (req, res, next) => {
   try {
     const user = new User({
-      username: req.body.username,
+      email: req.body.email,
       password: req.body.password,
-      displayName: req.body.displayName,
-      avatar: req.file ? req.file.filename : null,
+      // genres: req.body.genres
     });
 
     user.generateToken();
@@ -33,8 +32,18 @@ usersRouter.post('/', imagesUpload.single('avatar'), async (req, res, next) => {
   }
 });
 
+usersRouter.get("/", async (req, res, next) => {
+  const users = await User.find();
+
+  try {
+    return res.send({message: 'Username and password correct!', users});
+  } catch (e) {
+    return next(e);
+  }
+});
+
 usersRouter.post('/sessions', async (req, res, next) => {
-  const user = await User.findOne({username: req.body.username});
+  const user = await User.findOne({email: req.body.email});
 
   if (!user) {
     return res.status(400).send({error: 'Username not found'});
@@ -57,19 +66,19 @@ usersRouter.post('/sessions', async (req, res, next) => {
 
 });
 
-const downloadFile = async (url, filename) => {
-  const response = await fetch(url);
-  const fileStream = fs.createWriteStream(filename);
-  await new Promise((resolve, reject) => {
-    response.body.pipe(fileStream);
-    response.body.on("error", (err) => {
-      reject(err);
-    });
-    fileStream.on("finish", function () {
-      resolve();
-    });
-  });
-};
+// const downloadFile = async (url, filename) => {
+//   const response = await fetch(url);
+//   const fileStream = fs.createWriteStream(filename);
+//   await new Promise((resolve, reject) => {
+//     response.body.pipe(fileStream);
+//     response.body.on("error", (err) => {
+//       reject(err);
+//     });
+//     fileStream.on("finish", function () {
+//       resolve();
+//     });
+//   });
+// };
 
 usersRouter.post('/google', async (req, res, next) => {
   try {
@@ -106,7 +115,7 @@ usersRouter.post('/google', async (req, res, next) => {
 
       await downloadFile(avatar, imagePath);
       user = new User({
-        username: email,
+        email: email,
         password: crypto.randomUUID(),
         displayName,
         googleId,
