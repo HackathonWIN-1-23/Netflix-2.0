@@ -12,8 +12,8 @@
 </template>
 <script>
 import { mapStores } from 'pinia';
-import { useInputStore } from '../stores/getdata';
-import Header from '../components/Header.vue'
+import { useInputStore } from '../stores/GetData';
+import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 export default {
     components: {

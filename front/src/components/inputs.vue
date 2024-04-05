@@ -67,7 +67,7 @@ export default {
       const response = await fetch(URL, OPTIONS)
       const data = await response.json()
       if (response.ok) {
-        localStorage.setItem('user', data)
+        localStorage.setItem('user', data);
         this.$router.push({ path: '/home' })
       } else {
         console.log(data.errors.email.message)

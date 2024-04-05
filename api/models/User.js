@@ -23,16 +23,16 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  // genres: {
-  //   type: [String],
-  //   required: true,
-  //   validate: {
-  //     validator: function(value) {
-  //       return Array.isArray(value) && value.length > 0;
-  //     },
-  //     message: "Поле genres не может быть пустым массивом",
-  //   }
-  // },
+  genres: {
+    type: [String],
+    required: true,
+    validate: {
+      validator: function(value) {
+        return Array.isArray(value) && value.length > 0;
+      },
+      message: "Поле genres не может быть пустым массивом",
+    }
+  },
   token: {
     type: String,
     required: true,

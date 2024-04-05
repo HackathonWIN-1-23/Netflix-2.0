@@ -21,7 +21,7 @@
 </template>
 <script>
 import { Navigation, Autoplay } from 'swiper';
-import { useInputStore } from '../stores/getdata';
+import { useInputStore } from '../stores/GetData';
 import { mapStores } from 'pinia';
 export default {
 data: () => ({

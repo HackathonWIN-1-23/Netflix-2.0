@@ -17,7 +17,7 @@ usersRouter.post('/', async (req, res, next) => {
     const user = new User({
       email: req.body.email,
       password: req.body.password,
-      // genres: req.body.genres
+      genres: req.body.genres
     });
 
     user.generateToken();

@@ -16,7 +16,7 @@
 <script>
 import Chart from './Chart.vue';
 import { mapStores } from 'pinia';
-import { useInputStore } from '../stores/getdata.js'
+import { useInputStore } from '../stores/GetData'
 import { useHeaderStore } from '../stores/header';
 export default {
   data() {
