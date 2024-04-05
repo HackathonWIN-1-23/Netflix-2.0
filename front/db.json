@@ -1,0 +1,21 @@
+{
+  "favourite": [],
+  "header": [
+    {
+      "name": "Home",
+      "link": "/"
+    },
+    {
+      "name": "About",
+      "link": "/people"
+    },
+    {
+      "name": "Shows",
+      "link": "/"
+    },
+    {
+      "name": "input",
+      "link": "/input"
+    }
+  ]
+}
