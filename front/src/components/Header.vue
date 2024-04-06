@@ -8,7 +8,10 @@
         <router-link :class="routePath" to="/shows">MOVIES</router-link>
         <router-link :class="routePath" to="/people">PEOPLE</router-link>
         <Chart/>
-        <router-link  :class="routePath" to="/input">SIGN IN</router-link>
+        <div v-if="this.name">
+          <router-link  :class="routePath" to="/input">{{getUser()}}</router-link>
+        </div>
+        <div v-else> <router-link  :class="routePath" to="/input">SIGN IN</router-link></div>
       </div>
     </div>
   </div>
@@ -30,16 +33,11 @@ export default {
     Chart
   },
   methods: {
-    getUser(){
-      this.name = localStorage.getItem('user')
-      console.log(this.name)
+    getUser() {
+      this.name = JSON.parse(localStorage.getItem('user'))
     },
-    searchInput(){
-      console.log(this.movieInput.movieInputs)  
-    },
-
   },
-  async  mounted() {
+  async mounted() {
     this.getUser()
     this.inputStore.headerHeight = this.$refs.myHeader.clientHeight
     // console.log(this.inputStore.headerHeight);

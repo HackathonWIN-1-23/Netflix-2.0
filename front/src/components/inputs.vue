@@ -116,10 +116,9 @@ export default {
         body: JSON.stringify(this.formData)
       }
       const response = await fetch(URL, OPTIONS)
-      const data = await response.json()
       if (response.ok) {
-        localStorage.setItem('user', data);
-        this.$router.push({ path: '/home' })
+        localStorage.setItem('user', JSON.stringify(this.formData));
+        this.$router.push({ path: '/' })
       } else {
         this.errors.email = 'Такой email уже есть'
         // switch (data.errors.email.message) {
