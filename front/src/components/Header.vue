@@ -9,7 +9,7 @@
         <router-link :class="routePath" to="/people">PEOPLE</router-link>
         <Chart/>
         <div v-if="this.name">
-          <router-link  :class="routePath" to="/input">{{getUser()}}</router-link>
+          <button @click="logout" style="color: #fff">LOG OUT</button>
         </div>
         <div v-else> <router-link  :class="routePath" to="/input">SIGN IN</router-link></div>
       </div>
@@ -36,6 +36,10 @@ export default {
     getUser() {
       this.name = JSON.parse(localStorage.getItem('user'))
     },
+    logout() {
+      localStorage.clear();
+      location.reload();
+    }
   },
   async mounted() {
     this.getUser()

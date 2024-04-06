@@ -37,10 +37,12 @@ usersRouter.post('/activity', async (req, res) => {
     const { userEmail, genres } = req.body;
     const user = await User.findOne({email: userEmail});
 
-    console.log(user);
-
     genres.forEach(genre => {
       if (!user.genres.includes(genre)) {
+        user.genres.push(genre);
+      } else {
+        const index = genres.indexOf(genre);
+        genres.splice(index, 1);
         user.genres.push(genre);
       }
     });
