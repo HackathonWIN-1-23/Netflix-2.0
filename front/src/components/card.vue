@@ -1,6 +1,7 @@
 <script>
-import { useHeaderStore } from '../stores/header'
-import { mapStores } from 'pinia'
+import {useHeaderStore} from '../stores/header'
+import {mapStores} from 'pinia'
+
 export default {
   data() {
     return {
@@ -15,31 +16,63 @@ export default {
       }
     }
   },
-  computed:{
+  computed: {
     ...mapStores(useHeaderStore),
-    detailUrl(){
+    detailUrl() {
       const type = this.$route.name
       if (type === 'shows') {
         return 'shows'
-      }else{
+      } else {
         return 'person'
       }
     },
-    status(){
+    status() {
       if (this.headerStore.favourite) {
         return this.headerStore.favourite.find(item => item.id === this.dataB.id) || null
       }
     }
   },
   methods: {
+    async trackUserActivity() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        console.log(user);
+        console.log(this.dataB.genres);
+        const response = await fetch('http://localhost:8000/users/activity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userEmail: user.email,
+            genres: this.dataB.genres,
+          })
+        });
+        if (response.ok) {
+          const responseData = await response.json();
+          const user = responseData.user;
+          localStorage.setItem('user', JSON.stringify(user));
+          console.log(user);
+        } else {
+          console.error('Ошибка при запросе:', response.status);
+        }
+      } catch (error) {
+        console.error('Ошибка при отслеживании активности пользователя:', error);
+      }
+    },
     addFavourite() {
       if (this.status) {
-        this.$emit('deleteFavourite', this.dataB)  
-      }else{
+        this.$emit('deleteFavourite', this.dataB)
+      } else {
         this.$emit('addFavourite', this.dataB)
       }
     },
-  },
+    async handleButtonClick() {
+      await this.trackUserActivity();
+      this.addFavourite();
+    },
+  }
+  ,
 }
 </script>
 
@@ -49,19 +82,22 @@ export default {
       <div>
         <div class="btnOfChart">
           <v-btn
-          @click.prevent="addFavourite"
-          variant="plain" class="button_of_like">
-          <v-icon size="25" color="white" v-if="!status" class="icon___vtfy" dark>mdi-heart</v-icon>
-          <v-icon size="25" color="red" v-if="status" class="icon___vtfy" dark>mdi-heart</v-icon>
+              @click.prevent="handleButtonClick"
+              variant="plain" class="button_of_like">
+            <v-icon size="25" color="white" v-if="!status" class="icon___vtfy" dark>mdi-heart</v-icon>
+            <v-icon size="25" color="red" v-if="status" class="icon___vtfy" dark>mdi-heart</v-icon>
           </v-btn>
         </div>
       </div>
-      <img class="image" :src="dataB?.image?.medium || dataB?.image?.original || 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png' ">
+      <img class="image"
+           :src="dataB?.image?.medium || dataB?.image?.original || 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png' ">
       <div class="intro">
         <h2 class="movieName">{{ dataB.name }}</h2>
-        <p v-if="dataB?.rating?.average" class="movieDes">rating : {{ dataB?.rating?.average }} <v-icon dark>mdi-star</v-icon> </p>
+        <p v-if="dataB?.rating?.average" class="movieDes">rating : {{ dataB?.rating?.average }}
+          <v-icon dark>mdi-star</v-icon>
+        </p>
         <div v-if="dataB?.rating" class="chip_wrapper">
-        <v-chip class="movieRating" v-for="genre in dataB.genres" draggable>{{ genre }}</v-chip>
+          <v-chip class="movieRating" v-for="genre in dataB.genres" draggable>{{ genre }}</v-chip>
         </div>
         <div v-else>
           <div>
@@ -76,83 +112,96 @@ export default {
 </template>
 
 <style>
-.card{
-  box-shadow: 5px 5px 20px black ;
+.card {
+  box-shadow: 5px 5px 20px black;
   width: 230px;
   box-sizing: border-box;
 }
-.image{
+
+.image {
   border-radius: 3px;
   width: 100%;
-  transition: 1s ;
+  transition: 1s;
 }
-.intro{
+
+.intro {
   width: 100%;
   height: 50px;
   box-sizing: border-box;
   position: absolute;
-  background: rgb(27,27,27,.5);
+  background: rgb(27, 27, 27, .5);
   color: white;
   bottom: 5px;
   transition: .5s;
 }
+
 .movieName {
   margin: 10px;
   font-weight: 600;
   /* font-size: 40px ; */
 }
-.movieDes{
+
+.movieDes {
   font-size: 14px;
   margin: 20px;
   visibility: hidden;
   opacity: 0;
   transition: .5s;
 }
-.chip_wrapper{
+
+.chip_wrapper {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   padding: 0 20px;
   gap: 5px;
 }
-.movieRating{
+
+.movieRating {
   /* margin: 5px; */
   visibility: hidden;
   opacity: 0;
   transition: .5s;
 }
 
-.card:hover .movieRating{
+.card:hover .movieRating {
   opacity: 1;
   visibility: visible;
 }
-.card:hover .intro{
+
+.card:hover .intro {
   height: 220px;
   width: 100%;
   bottom: 5px;
   background: #000;
 }
-.card:hover .movieDes{
+
+.card:hover .movieDes {
   opacity: 1;
   visibility: visible;
 }
-.card:hover .image{
+
+.card:hover .image {
   transform: scale(1.1);
 }
-.btnOfChart{
+
+.btnOfChart {
   position: relative;
   width: 100%;
 }
-.v-btn.button_of_like{
+
+.v-btn.button_of_like {
   position: absolute;
   z-index: 2;
   right: 0px;
   top: 5px;
 }
-.card:hover .v-btn.button_of_like .v-icon{
+
+.card:hover .v-btn.button_of_like .v-icon {
   transform: scale(1.3) rotate(-360deg);
 }
-.v-btn.button_of_like .v-icon{
+
+.v-btn.button_of_like .v-icon {
   transition: 1s;
 }
 </style>

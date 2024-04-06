@@ -66,6 +66,6 @@ const router = createRouter({
       component: () => import('../components/login.vue')
     }
   ]
-})
+});
 
 export default router

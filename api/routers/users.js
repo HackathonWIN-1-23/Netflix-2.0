@@ -32,6 +32,29 @@ usersRouter.post('/', async (req, res, next) => {
   }
 });
 
+usersRouter.post('/activity', async (req, res) => {
+  try {
+    const { userEmail, genres } = req.body;
+    const user = await User.findOne({email: userEmail});
+
+    console.log(user);
+
+    genres.forEach(genre => {
+      if (!user.genres.includes(genre)) {
+        user.genres.push(genre);
+      }
+    });
+
+    await user.save();
+
+    res.status(200).send({ message: 'Активность пользователя успешно обработана', user});
+  } catch (error) {
+    console.error('Ошибка при обработке активности пользователя:', error);
+    res.status(500).send({ error: 'Ошибка сервера' });
+  }
+});
+
+
 usersRouter.get("/", async (req, res, next) => {
   const users = await User.find();
 
